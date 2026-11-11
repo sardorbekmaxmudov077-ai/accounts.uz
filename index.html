@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#0b1020">
+<title>ACCOUNTS.UZ — Raqamli e’lonlar bozori</title>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+:root{--bg:#090e1b;--panel:#111a2d;--panel2:#162139;--line:#26334e;--text:#f4f7ff;--muted:#9ba9c2;--accent:#6d8cff;--accent2:#8d6bff;--green:#35c98a;--red:#ff7185}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(circle at 15% 0%,#17274a 0,transparent 32%),var(--bg);color:var(--text);font:15px/1.5 Inter,system-ui,Segoe UI,Arial,sans-serif}
+button,input,select,textarea{font:inherit}button{cursor:pointer}.wrap{max-width:1160px;margin:auto;padding:0 20px}
+header{position:sticky;top:0;z-index:5;background:#090e1beF;backdrop-filter:blur(16px);border-bottom:1px solid var(--line)}
+.nav{height:72px;display:flex;align-items:center;justify-content:space-between;gap:16px}.brand{font-weight:900;letter-spacing:.5px;font-size:21px}.brand span{color:#8ea4ff}.nav-actions{display:flex;gap:10px;align-items:center}
+.btn{border:0;border-radius:12px;padding:11px 16px;font-weight:750;color:white;background:linear-gradient(120deg,var(--accent),var(--accent2));box-shadow:0 8px 22px #586dff24}
+.btn.secondary{background:#1b2943;border:1px solid var(--line);box-shadow:none}.btn.ghost{background:transparent;border:1px solid var(--line);box-shadow:none;color:var(--muted)}.btn:disabled{opacity:.55;cursor:not-allowed}
+.hero{padding:54px 0 30px;display:grid;grid-template-columns:1.3fr .7fr;gap:24px;align-items:center}.eyebrow{color:#a9b9ff;font-weight:800;font-size:12px;letter-spacing:1.6px;text-transform:uppercase}
+h1{font-size:clamp(34px,5vw,56px);line-height:1.06;margin:12px 0}.hero p{color:var(--muted);max-width:620px}.hero-card{border:1px solid #34446a;background:linear-gradient(145deg,#1a2b4c,#11192b);border-radius:24px;padding:25px;box-shadow:0 20px 60px #0004}.hero-card strong{font-size:34px;display:block}.hero-card small{color:var(--muted)}
+.toolbar{display:flex;gap:10px;margin:22px 0;flex-wrap:wrap}.field{background:#0d1526;border:1px solid var(--line);color:var(--text);border-radius:12px;padding:12px 14px;outline:none;min-width:0}.field:focus{border-color:var(--accent)}.search{flex:1;min-width:200px}
+.section-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:28px 0 14px}.section-head h2{margin:0;font-size:21px}
+.categories{display:flex;gap:9px;flex-wrap:wrap}.chip{border:1px solid var(--line);background:#111a2d;color:#c5d0e5;padding:9px 14px;border-radius:999px}.chip.active{background:#293b70;border-color:#718aff;color:white}
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:15px;margin-bottom:45px}.listing{background:linear-gradient(160deg,#151f34,#101829);border:1px solid var(--line);border-radius:18px;padding:17px;min-width:0}.listing-top{display:flex;justify-content:space-between;gap:10px}.tag{font-size:11px;color:#b9c7ff;background:#27365c;padding:5px 9px;border-radius:999px}.price{font-weight:900;font-size:21px;margin:16px 0 4px}.listing h3{margin:13px 0 5px;font-size:17px}.listing p{color:var(--muted);font-size:13px;min-height:40px}.listing-foot{display:flex;align-items:center;justify-content:space-between;color:var(--muted);font-size:12px}
+.notice{border:1px solid #65532b;background:#2a2417;color:#e8d8a9;border-radius:14px;padding:13px 15px;font-size:13px;margin:20px 0 35px}
+footer{border-top:1px solid var(--line);padding:25px 0;color:var(--muted);font-size:12px}
+.modal-back{position:fixed;inset:0;background:#02050bd9;z-index:10;display:none;align-items:center;justify-content:center;padding:18px}.modal-back.show{display:flex}.modal{width:min(480px,100%);max-height:92vh;overflow:auto;background:#111a2d;border:1px solid var(--line);border-radius:22px;padding:23px;box-shadow:0 25px 80px #0009}.modal h2{margin:0 0 7px}.modal p{color:var(--muted);font-size:13px}.form{display:grid;gap:11px;margin-top:18px}.form label{font-size:12px;color:#bdc9df;font-weight:700}.form label input,.form label select,.form label textarea{display:block;width:100%;margin-top:6px}.form textarea{min-height:85px;resize:vertical}.row{display:flex;gap:10px}.row>*{flex:1}.close{float:right;background:transparent;border:0;color:var(--muted);font-size:23px}.switch{color:#aebdff;text-decoration:underline;cursor:pointer}.status{padding:10px 12px;border-radius:10px;background:#172943;color:#c7d8ff;font-size:13px;display:none}.status.show{display:block}.status.error{background:#3a1d2a;color:#ffc2cb}.status.success{background:#153528;color:#aaf0cf}.user-pill{color:#c8d5f2;font-size:13px;max-width:190px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+@media(max-width:800px){.hero{grid-template-columns:1fr;padding-top:35px}.hero-card{display:none}.grid{grid-template-columns:repeat(2,1fr)}}@media(max-width:540px){.wrap{padding:0 14px}.grid{grid-template-columns:1fr}.nav{height:64px}.brand{font-size:18px}.nav-actions .user-pill{display:none}.btn{padding:10px 12px;font-size:13px}.hero{padding-bottom:10px}}
+</style>
+</head>
+<body>
+<header><div class="wrap nav">
+  <div class="brand">ACCOUNTS<span>.UZ</span></div>
+  <div class="nav-actions">
+    <span class="user-pill" id="userPill"></span>
+    <button class="btn secondary" id="loginBtn">Kirish</button>
+    <button class="btn" id="addBtn">+ E’lon berish</button>
+    <button class="btn ghost" id="logoutBtn" style="display:none">Chiqish</button>
+  </div>
+</div></header>
+<main class="wrap">
+  <section class="hero">
+    <div><div class="eyebrow">Raqamli e’lonlar maydoni</div><h1>Kerakli e’lonni<br><span style="color:#91a6ff">osongina toping.</span></h1>
+    <p>Raqamli mahsulotlar va platforma qoidalari ruxsat bergan, qonuniy tarzda topshirish mumkin bo‘lgan aktivlar haqidagi e’lonlarni ko‘ring.</p>
+    <button class="btn" onclick="document.getElementById('listings').scrollIntoView({behavior:'smooth'})">E’lonlarni ko‘rish</button></div>
+    <div class="hero-card"><small>ACCOUNTS.UZ</small><strong>Oddiy. Qulay. Tushunarli.</strong><p>O‘zingizga kerakli e’lonni toping yoki yangi e’lon joylang.</p></div>
+  </section>
+  <div class="notice">Xavfsizlik: parol, SMS-kod, tiklash kodi yoki boshqa maxfiy ma’lumotlarni e’lonlarga yozmang. O‘g‘irlangan, ruxsatsiz yoki platforma qoidalariga zid akkauntlar savdosiga yo‘l qo‘yilmaydi. Xaridor va sotuvchi kelishuvni mustaqil amalga oshiradi; ACCOUNTS.UZ to‘lovni qabul qilmaydi va bitim kafolati bermaydi.</div>
+  <div class="section-head"><h2>Kategoriyalar</h2></div>
+  <div class="categories" id="categories">
+    <button class="chip active" data-cat="Barchasi">Barchasi</button><button class="chip" data-cat="O‘yin">O‘yin</button><button class="chip" data-cat="Ijtimoiy tarmoq">Ijtimoiy tarmoq</button><button class="chip" data-cat="Dasturiy mahsulot">Dasturiy mahsulot</button><button class="chip" data-cat="Boshqa">Boshqa</button>
+  </div>
+  <div class="toolbar"><input class="field search" id="search" placeholder="E’lonlardan qidirish..."><select class="field" id="sort"><option value="new">Eng yangi</option><option value="low">Arzonidan</option><option value="high">Qimmatidan</option></select></div>
+  <section id="listings"><div class="section-head"><h2>So‘nggi e’lonlar</h2><span style="color:var(--muted);font-size:12px" id="count"></span></div><div class="grid" id="grid"></div></section>
+</main>
+<footer><div class="wrap">© 2026 ACCOUNTS.UZ · Demo versiya</div></footer>
+
+<div class="modal-back" id="authModal"><div class="modal">
+  <button class="close" data-close="authModal">×</button><h2 id="authTitle">Hisobga kirish</h2><p id="authSubtitle">Email va parolingizni kiriting.</p>
+  <div class="status" id="authStatus"></div>
+  <form class="form" id="authForm">
+    <label id="nameWrap" style="display:none">Ismingiz<input class="field" id="fullName" autocomplete="name" placeholder="Ismingiz"></label>
+    <label>Email<input class="field" id="email" type="email" autocomplete="email" required placeholder="name@example.com"></label>
+    <label>Parol<input class="field" id="password" type="password" autocomplete="current-password" required minlength="6" placeholder="Kamida 6 ta belgi"></label>
+    <button class="btn" id="authSubmit" type="submit">Kirish</button>
+  </form>
+  <p style="margin-top:16px"><span id="switchText">Hisobingiz yo‘qmi?</span> <span class="switch" id="switchAuth">Ro‘yxatdan o‘tish</span></p>
+  <button class="btn secondary" id="googleBtn" style="width:100%;margin-top:6px" type="button">Google orqali kirish — keyin ulanadi</button>
+</div></div>
+
+<div class="modal-back" id="listingModal"><div class="modal">
+  <button class="close" data-close="listingModal">×</button><h2>Yangi e’lon</h2><p>E’lon joylash uchun avval hisobingizga kiring.</p>
+  <div class="status" id="listingStatus"></div>
+  <form class="form" id="listingForm">
+    <label>Kategoriya<select class="field" id="cat"><option>O‘yin</option><option>Ijtimoiy tarmoq</option><option>Dasturiy mahsulot</option><option>Boshqa</option></select></label>
+    <label>E’lon nomi<input class="field" id="title" required maxlength="70" placeholder="E’lon sarlavhasi"></label>
+    <label>Tavsif<textarea class="field" id="description" required maxlength="500" placeholder="Mahsulot haqida qisqacha ma’lumot"></textarea></label>
+    <label>Narxi (so‘m)<input class="field" id="price" type="number" min="0" required placeholder="Masalan, 50000"></label>
+    <label>Aloqa turi<select class="field" id="contactType"><option value="telegram">Telegram</option><option value="phone">Telefon</option></select></label>
+    <label>Telegram username yoki telefon<input class="field" id="contact" required maxlength="80" placeholder="@username yoki +998..."></label>
+    <label style="display:flex;gap:9px;align-items:flex-start"><input id="agreement" type="checkbox" required style="margin-top:3px"> Men ushbu aktivni joylashtirish va topshirish huquqiga egaman hamda tegishli platforma qoidalariga rioya qilaman.</label>
+    <button class="btn" type="submit">E’lonni qo‘shish</button>
+  </form>
+</div></div>
+<script>
+(() => {
+  const SUPABASE_URL = "https://dembvapnxgrtckhkzrvo.supabase.co";
+  const SUPABASE_PUBLISHABLE_KEY = "sb_publishable_InyeMiFIzc7BkG8CewD_zw_cXOz2nTC";
+  const client = window.supabase.createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY);
+  const $ = id => document.getElementById(id);
+  let isSignup = false, currentUser = null, activeCategory = "Barchasi";
+  const demo = [
+    {id:1,title:"Raqamli dizayn shablonlari",category:"Dasturiy mahsulot",description:"Tahrirlash mumkin bo‘lgan dizayn shablonlari to‘plami.",price:45000,contactType:"telegram",contact:"@demo_design"},
+    {id:2,title:"O‘yin uchun ruxsat etilgan DLC",category:"O‘yin",description:"Platforma qoidalariga muvofiq topshiriladigan qo‘shimcha kontent.",price:80000,contactType:"telegram",contact:"@demo_games"},
+    {id:3,title:"Grafik resurslar to‘plami",category:"Boshqa",description:"Loyiha va taqdimotlar uchun grafik materiallar.",price:30000,contactType:"phone",contact:"+998 90 000 00 00"}
+  ];
+  let listings = JSON.parse(localStorage.getItem("accountsUzListings") || "null") || demo;
+  const money = n => new Intl.NumberFormat("uz-UZ").format(Number(n)) + " so‘m";
+  function showStatus(id,msg,type=""){const el=$(id);el.textContent=msg;el.className="status show "+type;}
+  function hideStatus(id){$(id).className="status";}
+  function openModal(id){$(id).classList.add("show");}
+  function closeModal(id){$(id).classList.remove("show");}
+  document.querySelectorAll("[data-close]").forEach(b=>b.onclick=()=>closeModal(b.dataset.close));
+  document.querySelectorAll(".modal-back").forEach(m=>m.addEventListener("click",e=>{if(e.target===m)closeModal(m.id)}));
+  function render(){
+    let q=$("search").value.toLowerCase().trim();
+    let arr=listings.filter(x=>(activeCategory==="Barchasi"||x.category===activeCategory)&&(`${x.title} ${x.description} ${x.category}`).toLowerCase().includes(q));
+    if($("sort").value==="low")arr.sort((a,b)=>a.price-b.price);
+    if($("sort").value==="high")arr.sort((a,b)=>b.price-a.price);
+    $("count").textContent=arr.length+" ta e’lon";
+    $("grid").innerHTML=arr.length?arr.map(x=>`<article class="listing"><div class="listing-top"><span class="tag">${escapeHtml(x.category)}</span><span style="color:var(--muted);font-size:11px">#${x.id}</span></div><h3>${escapeHtml(x.title)}</h3><p>${escapeHtml(x.description)}</p><div class="price">${money(x.price)}</div><div class="listing-foot"><span>Sotuvchi bilan aloqa</span><button class="btn secondary" data-contact="${x.id}">Bog‘lanish</button></div></article>`).join(""):'<p style="color:var(--muted)">Hozircha mos e’lon topilmadi.</p>';
+    document.querySelectorAll("[data-contact]").forEach(b=>b.onclick=()=>{const x=listings.find(y=>String(y.id)===b.dataset.contact);if(!x)return;const value=x.contactType==="telegram"?(x.contact.startsWith("@")?x.contact:"@"+x.contact):x.contact;alert("Sotuvchi bilan bog‘lanish:\n"+value+"\n\nEslatma: aloqa ma’lumotini tekshirib, ehtiyotkorlik bilan foydalaning.");});
+  }
+  function escapeHtml(s){return String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));}
+  $("search").addEventListener("input",render);$("sort").addEventListener("change",render);
+  $("categories").querySelectorAll("button").forEach(b=>b.onclick=()=>{activeCategory=b.dataset.cat;$("categories").querySelectorAll("button").forEach(x=>x.classList.toggle("active",x===b));render();});
+  function authMode(signup){isSignup=signup;$("authTitle").textContent=signup?"Hisob yaratish":"Hisobga kirish";$("authSubtitle").textContent=signup?"Email va parol orqali ro‘yxatdan o‘ting.":"Email va parolingizni kiriting.";$("nameWrap").style.display=signup?"block":"none";$("fullName").required=signup;$("password").autocomplete=signup?"new-password":"current-password";$("authSubmit").textContent=signup?"Ro‘yxatdan o‘tish":"Kirish";$("switchText").textContent=signup?"Hisobingiz bormi?":"Hisobingiz yo‘qmi?";$("switchAuth").textContent=signup?"Kirish":"Ro‘yxatdan o‘tish";hideStatus("authStatus");}
+  $("switchAuth").onclick=()=>authMode(!isSignup);
+  $("loginBtn").onclick=()=>{authMode(false);openModal("authModal");};
+  $("addBtn").onclick=()=>{if(!currentUser){authMode(false);openModal("authModal");showStatus("authStatus","E’lon joylash uchun avval hisobingizga kiring.");}else openModal("listingModal");};
+  $("logoutBtn").onclick=async()=>{const {error}=await client.auth.signOut();if(error)alert(error.message);};
+  $("googleBtn").onclick=()=>showStatus("authStatus","Google orqali kirish keyingi bosqichda ulanadi. Hozir email orqali kirishingiz mumkin.");
+  $("authForm").onsubmit=async e=>{
+    e.preventDefault();const email=$("email").value.trim(),password=$("password").value, name=$("fullName").value.trim();
+    $("authSubmit").disabled=true;$("authSubmit").textContent="Tekshirilmoqda...";
+    try{
+      if(isSignup){
+        const {data,error}=await client.auth.signUp({email,password,options:{data:{full_name:name}}});
+        if(error)throw error;
+        if(data.session){showStatus("authStatus","Hisob yaratildi va tizimga kirdingiz.","success");}
+        else{showStatus("authStatus","Ro‘yxatdan o‘tish so‘rovi yuborildi. Emailingizga kelgan tasdiqlash havolasini bosing, so‘ng tizimga kiring.","success");}
+      }else{
+        const {error}=await client.auth.signInWithPassword({email,password});if(error)throw error;
+        closeModal("authModal");
+      }
+    }catch(err){showStatus("authStatus",err.message||"Xatolik yuz berdi.","error");}
+    finally{$("authSubmit").disabled=false;$("authSubmit").textContent=isSignup?"Ro‘yxatdan o‘tish":"Kirish";}
+  };
+  async function updateSession(){
+    const {data}=await client.auth.getSession();currentUser=data.session?.user||null;
+    $("loginBtn").style.display=currentUser?"none":"inline-block";$("logoutBtn").style.display=currentUser?"inline-block":"none";
+    $("userPill").textContent=currentUser?(currentUser.user_metadata?.full_name||currentUser.email):"";
+  }
+  client.auth.onAuthStateChange((_event,session)=>{currentUser=session?.user||null;updateSession();});
+  $("listingForm").onsubmit=e=>{
+    e.preventDefault();if(!currentUser){showStatus("listingStatus","Avval hisobingizga kiring.","error");return;}
+    const item={id:Date.now(),title:$("title").value.trim(),category:$("cat").value,description:$("description").value.trim(),price:Number($("price").value),contactType:$("contactType").value,contact:$("contact").value.trim()};
+    listings.unshift(item);localStorage.setItem("accountsUzListings",JSON.stringify(listings));render();$("listingForm").reset();closeModal("listingModal");alert("Demo e’lon brauzeringizga qo‘shildi. Hozircha boshqa foydalanuvchilarga ko‘rinmaydi.");
+  };
+  render();updateSession();
+})();
+</script>
+</body>
+</html>
